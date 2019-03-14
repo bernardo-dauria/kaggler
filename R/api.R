@@ -53,7 +53,7 @@ kgl_api_get <- function(path, ..., auth = kgl_auth()) {
     b <- r
     r <- tryCatch(r, error = function(e) return(NULL))
     if (is.null(r) %||% nrow(r) == 0) {
-      r <- as_json(b)
+      # r <- as_json(b)
     }
   }
 
