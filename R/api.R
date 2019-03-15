@@ -71,10 +71,10 @@ interpret_response <- function(response, type=NULL) {
     }
     if (grepl("ms\\-excel",http_T)) {
         print("ciao")
-        return(content(response, "text"))
+        return(httr::content(response, "text"))
     }
     if (grepl("csv",http_T))  {
-        return(read.csv(text=content(response, "text")))
+        return(read.csv(text=httr::content(response, "text")))
     }
     return(response)
 }
