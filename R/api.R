@@ -62,7 +62,7 @@ kgl_api_get <- function(path, ..., auth = kgl_auth(), type=NULL) {
                   
 interpret_response <- function(response, type=NULL) {
     if (is.null(type)) {
-        http_T <- http_type(a)
+        http_T <- httr::http_type(a)
     } else {
         http_T <- type
     }
