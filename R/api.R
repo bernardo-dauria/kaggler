@@ -38,7 +38,7 @@ kgl_api_call <- function(path, ...) {
 }
 
 ## for GET requests
-kgl_api_get <- function(path, ..., auth = kgl_auth()) {
+kgl_api_get <- function(path, ..., auth = kgl_auth(), type=NULL) {
   ## build and make request
   r <- httr::GET(kgl_api_call(path, ...), auth)
 
@@ -50,15 +50,33 @@ kgl_api_get <- function(path, ..., auth = kgl_auth()) {
     m <- httr::content(r)
     if ("message" %in% names(m)) cat(m$message, fill = TRUE)
   } else {
-    b <- r
     r <- tryCatch(r, error = function(e) return(NULL))
     if (is.null(r) %||% nrow(r) == 0) {
-      # r <- as_json(b)
+      r <- interpret_response(r, type=type)
     }
   }
 
   ## return data/response
   r
+}
+                  
+interpret_response <- function(response, type=NULL) {
+    if (is.null(type)) {
+        http_T <- http_type(a)
+    } else {
+        http_T <- type
+    }
+    if (grepl("json",http_T)) {
+        return(as_json(response))
+    }
+    if (grepl("ms\\-excel",http_T)) {
+        print("ciao")
+        return(content(response, "text"))
+    }
+    if (grepl("csv",http_T))  {
+        return(read.csv(text=content(response, "text")))
+    }
+    return(response)
 }
 
 
