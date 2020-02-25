@@ -52,7 +52,7 @@ kgl_api_get <- function(path, ..., auth = kgl_auth(), type=NULL) {
   } else {
     r <- tryCatch(r, error = function(e) return(NULL))
     if (is.null(r) %||% nrow(r) == 0) {
-      r <- interpret_response(r, type=type)
+      r <- interpret_response(r, type=guess_type(path))
     }
   }
 
@@ -79,6 +79,37 @@ interpret_response <- function(response, type=NULL) {
     return(response)
 }
 
+## Get last characters
+substrRight <- function(x, n){
+  substr(x, nchar(x)-n+1, nchar(x))
+}
+
+## Guess type from path                  
+guess_type <- function(path) {
+    if (substrRight(path, 4) == ".csv")  {
+        return("csv")
+    }
+  return(NULL)
+}
+
+interpret_response <- function(response, type=NULL) {
+    if (is.null(type)) {
+        http_T <- httr::http_type(response)
+    } else {
+        http_T <- type
+    }
+    if (grepl("json",http_T)) {
+        return(as_json(response))
+    }
+    if (grepl("ms\\-excel",http_T)) {
+        return(httr::content(response, "text"))
+    }
+    if (grepl("csv",http_T))  {
+        print("csv")
+        return(read.csv(text=httr::content(response, "text")))
+    }
+    return(response)
+}
 
 `%||%` <- function(a, b) {
   if (length(a) > 0) a else b
