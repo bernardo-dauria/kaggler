@@ -17,7 +17,7 @@ devtools::install_packages("mkearney/kaggler")
 
 ## API authorization
 
-<span>1.</span> Go to [https://www.kaggle.com/](kaggle.com) and sign in
+<span>1.</span> Go to [https://www.kaggle.com/](https://www.kaggle.com) and sign in
 
 <span>2.</span> Click `Account` or navigate to
 `https://www.kaggle.com/{username}/account`
